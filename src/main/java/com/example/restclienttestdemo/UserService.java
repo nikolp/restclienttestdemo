@@ -12,9 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserService {
@@ -47,18 +45,14 @@ public class UserService {
 
     public User getSingleUserWithQueryParamsAndCustomEncoding(Long id, String name) {
         String encodedName;
-        try {
-            // Add .replace("+", "%20") at the end if you don't like spaces represented as +
-            encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
-        StringBuilder urlBuilder = new StringBuilder("/api/users")
-                .append("?id=")
-                .append(id.toString())
-                .append("&name=")
-                .append(encodedName);
-        String url = urlBuilder.toString();
+        // Add .replace("+", "%20") at the end if you don't like spaces represented as +
+        encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
+        String urlBuilder = "/api/users" +
+                "?id=" +
+                id.toString() +
+                "&name=" +
+                encodedName;
+        String url = urlBuilder;
 
         ResponseEntity<User> responseEntity = this.restTemplate
                 .exchange(url, HttpMethod.GET, makeHttpEntityForGet(), User.class);
