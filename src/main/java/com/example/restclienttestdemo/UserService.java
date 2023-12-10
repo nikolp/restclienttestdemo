@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -47,12 +46,11 @@ public class UserService {
         String encodedName;
         // Add .replace("+", "%20") at the end if you don't like spaces represented as +
         encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
-        String urlBuilder = "/api/users" +
+        String url = "/api/users" +
                 "?id=" +
                 id.toString() +
                 "&name=" +
                 encodedName;
-        String url = urlBuilder;
 
         ResponseEntity<User> responseEntity = this.restTemplate
                 .exchange(url, HttpMethod.GET, makeHttpEntityForGet(), User.class);
