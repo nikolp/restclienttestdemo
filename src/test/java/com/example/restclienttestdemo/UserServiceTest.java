@@ -53,6 +53,44 @@ class UserServiceTest {
         assertEquals(1, result.id);
     }
 
+    @Test
+    void getSingleUserWithQueryParams() {
+        String json = """
+        {
+        "id": 1,
+        "name": "Philip"
+        }
+     """;
+        this.mockRestServiceServer
+                .expect(requestTo("/api/users?id=1&name=%2520"))
+                // The two checks below not helpful as they are already checked in the full requestTo above
+                .andExpect(queryParam("id", "1"))
+                .andExpect(queryParam("name", "%2520"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+        User result = userService.getSingleUserWithQueryParams(1L, " ");
+        assertEquals(1, result.id);
+    }
+
+    @Test
+    void getSingleUserWithQueryParamsAndCustomEncoding() {
+        String json = """
+        {
+        "id": 1,
+        "name": "Philip"
+        }
+     """;
+        this.mockRestServiceServer
+                .expect(requestTo("/api/users?id=1&name=%253A"))
+                // The two checks below not helpful as they are already checked in the full requestTo above
+                .andExpect(queryParam("id", "1"))
+                .andExpect(queryParam("name", "%253A"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+        User result = userService.getSingleUserWithQueryParamsAndCustomEncoding(1L, ":");
+        assertEquals(1, result.id);
+    }
+
     @SneakyThrows
     @Test
     void postUser() {
